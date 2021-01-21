@@ -3,7 +3,7 @@
 
 ### Vue
 
-1. Vue reactive principle
+[1]. Vue reactive principle
 
 ![](./img/vue-component-post-info.png)
 
@@ -45,7 +45,7 @@ When a Vue instance is created, Vue will traverse the properties of the data opt
 Each component instance will have a corresponding watcher instance, which will record all dependent data attributes (dependency collection, computed watcher, user watcher instances) during component rendering, and then the setter method will notify when the dependency is changed The watcher instance that relies on this data is recalculated (distributed updates), so that its associated components are re-rendered.
 
 
-2. The realization principle of `computed`
+[2]. The realization principle of `computed`:
 
 
 The essence of computed is a lazily evaluated observer.
@@ -62,10 +62,11 @@ If there is, it will be recalculated and then compared with the old and new valu
 
 If not, just set `this.dirty = true`. (When the calculated attribute depends on other data, the attribute will not be recalculated immediately. It will only be calculated when the attribute needs to be read elsewhere, that is, it has the characteristics of lazy (lazy calculation).)
 
-3. What is the difference between `computed` and `watch` and application scenarios?
 
-the difference
-computed attribute: depends on other attribute values, and the computed value is cached. Only when the attribute value it depends on changes, the computed value will be recalculated the next time the computed value is obtained.
+[3]. What is the difference between `computed` and `watch` and application scenarios?
+
+
+the difference computed attribute: depends on other attribute values, and the computed value is cached. Only when the attribute value it depends on changes, the computed value will be recalculated the next time the computed value is obtained.
 
 Watch listener: It is more about the function of "observation", no cache, similar to the monitoring callback of some data, whenever the monitored data changes, the callback will be executed for subsequent operations.
 
@@ -76,7 +77,9 @@ When we need to perform numerical calculations and rely on other data, we should
 
 When we need to perform asynchronous or expensive operations when data changes, we should use watch. Using the watch option allows us to perform asynchronous operations (accessing an API), limiting the frequency with which we perform the operation, and before we get the final result ,Set the intermediate state. These are things that calculated properties cannot do.
 
-4. Why is Proxy adopted in Vue3.0 and `Object.defineProperty` is abandoned?
+
+[4]. Why is Proxy adopted in Vue3.0 and `Object.defineProperty` is abandoned?
+
 
 `Object.defineProperty` itself has a certain ability to monitor the changes of array subscripts, but in Vue, considering the performance/experience cost-effectiveness, this feature is greatly abandoned (why can Vue not detect array changes). In order to solve this problem, the following methods can be used to monitor the array after internal processing in vue
 
@@ -103,7 +106,7 @@ Since only the above 7 methods have been hacked, the attributes of other arrays 
 `Proxy` can hijack the entire object and return a new object. `Proxy` can not only proxy objects, but also proxy arrays. It can also proxy dynamically added attributes.
 
 
-5. What is the use of `keys` in Vue?
+[5]. What is the use of `keys` in Vue?
 
 The key is the unique id for each vnode. Depending on the key, our diff operation can be more accurate and faster (for simple list page rendering, the diff node is also faster, but it will produce some hidden side effects, such as may not Transition effects, or the state of binding data (form) at some nodes, will cause state dislocation.)
 
@@ -117,7 +120,7 @@ Faster: The uniqueness of the key can be fully utilized by the Map data structur
 [code](./vue/05.js)
 
 
-6. Talk about the principle of `nextTick`
+[6]. Talk about the principle of `nextTick`
 
 #### JS operating mechanism
 
@@ -158,7 +161,7 @@ Vue uses asynchronous queues to control `DOM` updates and `nextTick` callbacks.
 Because of its high-priority feature, microtask can ensure that the microtasks in the queue are executed before an event loop
 Considering compatibility issues, vue made a downgrade scheme from microtask to macrotask
 
-7. How does vue `mutate` array methods?
+[7]. How does vue `mutate` array methods?
 
 Let's take a look at the source code first
 
@@ -167,9 +170,116 @@ Let's take a look at the source code first
 Simply put, Vue rewrites the 7 methods of the array through prototype interception. First, it gets the ob of this array, which is its `Observer` object. If there is a new value, it calls `observeArray` to monitor the new value. Then manually call `notify`, `notify` the render watcher, and execute update
 
 
-8. Why must the Vue component data be a function?
+[8]. Why must the Vue component data be a function?
 
 In the new `Vue()` instance, data can be directly an object. Why in the vue component, data must be a function?
 Because components can be reused, objects in `JS` are referenced. If the component data is an object, then the data attribute values ​​in the sub-components will pollute each other and cause side effects.
 
 So the data option of a component must be a function, so each instance can maintain an independent copy of the returned object. Instances of new Vue will not be reused, so there is no such problem.
+
+
+[9]. Talk about the Vue event mechanism, handwriting `$on`, `$off`, `$emit`, `$once`
+
+
+> The Vue event mechanism is essentially an implementation of a publish-subscribe model.
+
+[10]. Talk about the Vue render process.
+
+
+Call the `compile` function to generate the render function string. The compilation process is as follows:
+
+The parse function parses the template and generates `ast` (abstract syntax tree)
+
+The `optimize` function optimizes static nodes (marking content that does not need to be updated every time, the diff algorithm will directly skip the static nodes, thereby reducing the comparison process and optimizing the performance of the patch)
+
+The `generate` function generates the render function string
+
+Call the new `Watcher` function to monitor the changes in the data. When the data changes, the Render function executes to generate a `vnode` object
+
+Call the patch method, compare the old and new `vnode` objects, and add, modify, and delete real DOM elements through the DOM diff algorithm
+
+
+[11]. Talk about the implementation principle and caching strategy of keep-alive:
+
+
+[code](./vue/keep-alive.vue)
+
+
+### Principle 
+
+Get the first sub-component object and its component name wrapped by keep-alive. 
+Condition matching is performed according to the set include/exclude (if any),
+ and it is decided whether to cache. 
+If there is no match, return the component instance directly.
+ Generate a cache Key based on the component ID and tag,
+and find whether the component instance has been cached in the cache object. 
+If it exists, directly take out the cached value and update the position of 
+the key in this.keys .
+(update the key position is the key to realize the LRU replacement strategy) 
+Store the component instance in this.cache object and save the key value,
+and then check the cache .
+Whether the number of instances exceeds the set value of `max`,
+if it exceeds, the least recently used instance (that is, the key with subscript 0)
+will be deleted according to the `LRU` replacement strategy.
+Finally, the keepAlive property of the component instance is set to true, 
+which is wrapped in rendering and execution .
+The hook function of the component will be used, not detailed here.
+
+The implementation of keep-alive uses the `LRU` strategy to 
+push the recently accessed component to the end of this.keys, 
+`this.keys[0]` is the component that has not been accessed for the longest time.
+ When the cache instance exceeds the max setting value, 
+ delete `this.keys[0]`
+ 
+ 
+[12]. What is the principle of implementing `vm.$set()`? 
+
+Due to the limitations of modern JavaScript (and `Object.observe` has also been deprecated), Vue cannot detect the addition or deletion of object properties. 
+Since `Vue` will perform `getter/setter` conversion on the property when initializing the instance, the property must exist on the data object in order for Vue to convert it to reactive. 
+For already created instances, `Vue` does not allow dynamic addition of root-level reactive properties. 
+However, you can use the `Vue.set(object, propertyName, value)` method to add responsive properties to nested objects. 
+So how does `Vue` internally solve the problem that the new properties of the object cannot respond?
+
+
+[code](./vue/12.ts)
+
+
+### JS
+
+[13] . Realize shallow copy and deep copy
+
+[code](./vue/13.js)
+
+[14] . think about `setTimeout()`
+
+[code](./vue/14.js)
+
+[15] . parseInt and map()
+
+[code](./vue/15.js)
+
+[16] .  What is anti-shake and throttling?  What's the difference? How to achieve?
+
+
+1) Anti-shake function will only be executed once within n seconds after triggering the high-frequency event. If the high-frequency event is triggered again within n seconds, the time will be recalculated;
+
+[code](./vue/16.js)
+
+[17] . Introduce the difference between `Set`, `Map`, `WeakSet` and `WeakMap`?
+
+1) `Set` members are unique, unordered, and non-repetitive; `[value, value]`, 
+the key value is consistent with the key name (or only the key value, no key name); 
+It can be traversed, the methods are: `add`, `delete`, `has`. 
+2) The members of `WeakSet` are all objects; 
+the members are all weak references, which can be recycled by garbage collection mechanism, 
+and can be used to save `DOM` nodes, which are not easy to cause memory leaks; 
+they cannot be traversed. The methods include `add`, `delete`, and `has`. 
+3) `Map` is essentially a collection of key-value pairs, similar to a collection; it can be traversed, with many methods, and can be converted with various data formats. 
+4) `WeakMap` only accepts the object as the key name (except null), and does not accept other types of values ​​as the key name; 
+the key name is a weak reference, the key value can be arbitrary, and the object pointed to by the key name can be garbage collected. 
+The name is invalid; it cannot be traversed. The methods are `get`, `set`, `has`, and `delete`.
+
+
+[18] . Handwriting EventEmitter
+
+[code](./vue/18.js)
