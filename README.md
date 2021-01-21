@@ -188,7 +188,7 @@ So the data option of a component must be a function, so each instance can maint
 
 Call the `compile` function to generate the render function string. The compilation process is as follows:
 
-The parse function parses the template and generates `ast` (abstract syntax tree)
+The `parse` function parses the template and generates `ast` (abstract syntax tree)
 
 The `optimize` function optimizes static nodes (marking content that does not need to be updated every time, the diff algorithm will directly skip the static nodes, thereby reducing the comparison process and optimizing the performance of the patch)
 
@@ -196,7 +196,10 @@ The `generate` function generates the render function string
 
 Call the new `Watcher` function to monitor the changes in the data. When the data changes, the Render function executes to generate a `vnode` object
 
-Call the patch method, compare the old and new `vnode` objects, and add, modify, and delete real DOM elements through the DOM diff algorithm
+Call the `patch` method, compare the old and new `vnode` objects, and add, modify, and delete real DOM elements through the DOM diff algorithm
+
+![](./img/vue-render-process.png)
+
 
 
 [11]. Talk about the implementation principle and caching strategy of keep-alive:
@@ -283,3 +286,5 @@ The name is invalid; it cannot be traversed. The methods are `get`, `set`, `has`
 [18] . Handwriting EventEmitter
 
 [code](./vue/18.js)
+
+
