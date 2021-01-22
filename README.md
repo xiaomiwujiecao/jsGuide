@@ -287,4 +287,71 @@ The name is invalid; it cannot be traversed. The methods are `get`, `set`, `has`
 
 [code](./vue/18.js)
 
+#### Redrawing
+
+Redrawing  will not affect the layout due to changes in the collection properties of nodes or changes in styles, and  which is called redrawing, 
+such as outline, visibility, color, background-color, etc. 
+The cost of redrawing is high, so the browser must verify the `DOM` ,
+The visibility of other node elements on the tree. 
+
+#### Backflow
+
+`Reflow` means that the layout or geometric properties need to be changed, which is called reflow. 
+`Reflow` is a key factor affecting browser performance,
+ because its changes involve the layout update of part of the page (or the entire page). 
+The reflow of an element may result in the subsequent reflow of all child elements,
+ nodes and ancestor nodes that follow it in the `DOM`. 
+Most of the reflow will cause the page to be re-rendered. 
+Redrawing will definitely cause redrawing, and redrawing will not necessarily cause reflowing.
+
+#### Browser optimization
+
+Most modern browsers use the queue mechanism to update the layout in batches.
+ The browser will put the modification operation in the queue. At least one browser refresh (ie 16.6ms) will clear the queue, but when you get the layout information, the queue is 
+There may be operations that affect the return value of these properties or methods. 
+Even if there is no operation, the browser will forcefully clear the queue,
+ trigger reflow and redraw to ensure that the correct value is returned. 
+For example, `offsetTop`, `clientTop`, `scrollTop`, `getComputedStyle()`, `width`, `height`, `getBoundingClientRect()`. 
+Frequent use of these properties should be avoided. They will all force the rendering to refresh the queue.
+
+#### Reduce redraw and reflow
+
+##### CSS
+ 
+- Use `transform` instead of `top`; 
+- use `visibility` to replace `display: none`, the former causes `redrawing`, and the latter causes `reflow`;
+- Avoid using `table` layout; try to change the class at the end of `the` DOM tree as much as possible; 
+- Avoid setting multiple `inline styles`, CSS selectors 
+- Match and search from right to left to avoid excessive node levels; apply animation effects to elements whose position attribute is absolute or fixed to avoid affecting the layout of other elements; avoid using CSS expressions, which may cause reflow; CSS hardware acceleration;
+
+##### JS
+
+- Avoid frequent manipulation of `styles` and `modify` the class;
+- Avoid frequent manipulation of the `DOM` and merge multiple modifications into one;
+- Avoid frequent reading of attributes that will cause `reflow/redraw`, and cache the results; 
+- Use `absolute` positioning for elements with complex animations, so  it is out of the document flow;
+
+[30] . Analyze and compare the pros and cons of `opacity: 0`, `visibility: hidden`, `display: none` and applicable scenarios
+
+
+- `display: none`- it does not occupy space, can not be clicked,  would cause reflow, do not affect child elements 
+- `visibility: hidden`-occupy space, can not be clicked, cause redrawing, child elements can be set visible for display
+- `opacity: 0`-occupy space, clickable, causes redrawing, do not affect child elements 
+
+[31] . Brief description of the CSS box model
+
+The box is composed of `margin`, `border`, `padding`, and `content`; 
+standard box model: `box-sizing`: `content-box`; 
+IE box model: `box-sizing`:` border-box`;
+
+[32] . Briefly describe `Rem` and its conversion principle
+
+`rem` is a new relative length unit of `CSS3`, 
+which refers to the size of the calculated value relative to the font-size of the root element html. 
+By default, the `font-size` of the root element is `16px`. 
+If you want to set the font size of 12px, then `12px/16px = 0.75rem`. 
+Because `px` is a relatively fixed unit, the font size is directly fixed and cannot be scaled with the browser; 
+`rem` is directly relative to the root element html, avoiding the hierarchical relationship,
+ and it is better supported by new mobile browsers; `vw` + for personal use 
+Percentage layout is used more, you can use `webpack`'s `postcss-loader` plug-in `postcss-px-to-viewport` to realize automatic conversion from px to vw, which is very suitable for development.
 
