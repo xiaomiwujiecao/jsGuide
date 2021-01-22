@@ -285,7 +285,101 @@ The name is invalid; it cannot be traversed. The methods are `get`, `set`, `has`
 
 [18] . Handwriting EventEmitter
 
-[code](./vue/18.js)
+[code](src/js/18.js)
+
+[19] . Flatten the array and remove duplicate data, and finally get an ascending and non-repetitive array
+
+[code](src/js/19.ts)
+
+[20] . Count the number of occurrences of each element in the array
+
+[code](src/js/20.ts)
+
+[21] . When importing styles on a page, what is the difference between using `link` and `@import`
+
+Difference in affiliation. 
+`@import` can only import style sheets, link can also define `RSS`, rel connection attributes, and introduce website icons; 
+the loading order is different; when the page is loaded, the CSS introduced by the link tag is loaded at the same time; the CSS imported by `@import` will be loaded after the page is loaded 
+After being loaded; Compatibility difference;
+
+[22]. The rendering principle of the `browser`
+
+First parse the received document and construct a `DOM` tree according to the document definition. The `DOM` tree is composed of DOM elements and attribute nodes; then the CSS is parsed to generate a CSSOM rule tree; and a Render Tree is constructed based on the DOM tree and CSSOM rule tree. 
+The node of the rendering tree is called the rendering object. The rendering object is a rectangle containing attributes such as color and size. The rendering object corresponds to the DOM object, but this correspondence is not one-to-one. Invisible DOM elements will not 
+Is inserted into the render tree. 
+When rendering objects are created and added to the tree, they have no position or size, so when the browser generates the render tree, it will be laid out according to the render tree (also called reflow). 
+What the browser has to do at this stage is to figure out the exact position and size of each node on the page. 
+Usually this behavior is also called "automatic rearrangement". 
+After the layout phase is over, it is the drawing phase, where the tree is rendered and the paint method of the object is called to display their content on the screen, and the UI basic components are used for drawing. 
+For a better user experience, the rendering engine will render the content on the screen as early as possible, and will not wait until all html parsing is completed before constructing and laying out the render tree. 
+It displays part of the content after parsing part of the content, and may download the rest of the content on the Internet.
+
+[23] . What is the auto-completion function of `HTML5` form?
+
+The autocomplete attribute specifies whether the input field should enable the auto-complete function, the default is enabled, set to autocomplete=off to turn off the function. 
+Auto-complete allows the browser to predict the input to the field. 
+When the user starts typing in the field, the browser should display the options filled in the field based on the previously typed value.
+
+
+[24] . How to realize the communication between multiple tabs in the browser?
+
+The communication between multiple tabs is essentially achieved through the intermediary model. 
+Because there is no way to communicate directly between tabs, we can find an intermediary to let the tabs communicate with the intermediary, and then let this intermediary forward the message. 
+Using `Websocket`, the communication tab is connected to the same server. After sending a message to the server, the server pushes the message to all connected clients; you can call `localStorage`. When localStorage is added, modified or deleted in another browsing context, it will
+To trigger a storage event, we can communicate with the page information by listening to the storage event and controlling its value; if we can get a reference to the corresponding tab, multiple tabs can also be communicated through the `postMessage` method;
+
+[25]. Briefly describe the front-end performance optimization
+
+In terms of page content, 
+the number of HTTP requests is reduced through file merging, css sprite, base64, etc., 
+to avoid excessive requests causing waiting; `DNS cache` and other mechanisms are used to reduce the number of `DNS queries`; 
+Unchanged resources are cached; 
+through lazy loading, to reduce the resources that need to be requested when the first screen of the page is loaded,
+ and the delayed-loaded resources are requested to be loaded when the user needs to access them; 
+ through user behavior, some resources are pre-used 
+The way of loading is to improve the response speed when users need to access resources; 
+the server uses `CDN` service to improve the response speed of users to resource requests;
+ the server uses Gzip, Deflate and other methods to compress the transmitted resources to reduce the transmission of files
+Reduce the size of the `cookie` as much as possible, and allocate static resources to other domain names
+ to avoid carrying unnecessary cookies when requesting static resources;
+ 
+[26] . What is `webp`?
+
+`WebP` is a new image format developed by `Google`. It is a bitmap with direct color that supports both lossy and lossless compression methods. 
+The biggest advantage of using the webp format is that it has a smaller file size under the same quality files. 
+Therefore, it is very suitable for the transmission of network pictures, because the reduction of the picture volume means the reduction of the request time, which will improve the user experience. 
+This is a new image format developed by Google.
+
+By creating an Image object, set its src attribute to a webp format picture, 
+and then get the `width` and `height` of the picture in the `onload` event. If it can be obtained, 
+it means that the browser supports webp format pictures. 
+If the `onerror` function cannot be obtained or triggered, it means that the browser does not support images in `webp` format.
+
+[27] . Introduce `BFC` and its applications
+
+BFC (Block Format Context) block-level formatting context is a `CSS` rendering mode in the page box model,
+ which is equivalent to an independent container, and the elements inside and outside elements do not affect each other. 
+The ways to create `BFC` are: html `root` element `,float`, `floating absolute positioning `,overflow not `visible` display for table layout or flexible layout; 
+the main function of BFC is to: `clear floating` and prevent overlapping of margins between adjacent elements in the same `BFC` container
+
+[28] . How to center a div horizontally and vertically?
+
+[code](src/html/28.html)
+
+[29] . Introduce `Repaint` & `Reflow`, and how to optimize it?
+
+#### Browser rendering mechanism
+ 
+The browser uses the `Flow` Based Layout; 
+the browser parses HTML into `DOM`, and parses CSS into `CSSOM`. 
+The `DOM` and `CSSOM` merge to produce a `Render Tree`; with `RenderTree`, 
+We know the styles of all the nodes, and then calculate their size and position on the page,
+ and finally draw the nodes on the page; because the browser uses a stream layout, 
+ the calculation of the `Render` Tree usually only needs to be traversed once. 
+But with the exception of table and its internal elements, they may need to be calculated multiple times, 
+which usually takes 3 times the time of the same element, 
+which is one of the reasons why you should avoid using table layout;
+
 
 #### Redrawing
 
