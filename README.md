@@ -449,3 +449,116 @@ Because `px` is a relatively fixed unit, the font size is directly fixed and can
  and it is better supported by new mobile browsers; `vw` + for personal use 
 Percentage layout is used more, you can use `webpack`'s `postcss-loader` plug-in `postcss-px-to-viewport` to realize automatic conversion from px to vw, which is very suitable for development.
 
+[33] . Mobile viewport configuration
+
+[code](./src/html/33.html)
+
+[34] . Briefly describe pseudo-classes and pseudo-elements
+
+#### Pseudo-classes
+
+`Pseudo-classes` are used to add corresponding styles to existing elements when they are in a certain state. 
+This state changes according to changes in user behavior. 
+For example: `hover`. 
+It can add styles to elements only in a state that the dom tree cannot describe, so it is called a pseudo-class. 
+
+#### Pseudo-elements 
+
+`Pseudo-elements` are used to create elements that are not originally in the document tree and add styles to them, 
+such as `::before`. 
+Although the user can see these contents, he is not in the document tree. 
+
+#### Difference 
+
+The operation object of the pseudo-class is the existing element in the document tree, and the pseudo-element is to create an element outside the document tree. 
+In the css specification, a double colon `::` represents a pseudo element, and a colon `:` represents a pseudo class.
+
+[35] . `Margin` and `padding` of inline elements
+
+- Horizontal direction: both are valid in the horizontal direction; 
+- Vertical direction: both are invalid in the vertical direction; (padding-top and padding-bottom will show the effect, but the height will not be stretched and will not affect the surrounding elements)
+
+
+[36] . Which properties in `CSS` can be `inherited`?
+
+##### Font family attributes
+
+- font-family
+
+- font-size
+
+- font-weight
+
+- font-style
+
+###### Text series attributes
+
+- text-indent
+
+- text-align
+
+- line-hight
+
+- word-spacing
+
+- letter-spacing
+
+- color
+
+##### other
+
+- cursor
+
+- visibility
+
+
+[37] . What are the new `pseudo-classes` in `CSS3`?
+ 
+(E.g. nth-child)
+
+- `elem:nth-child(n)`: select the nth element whose label is elem under the parent element;
+
+- `elem:nth-last-child(n)`: Same as above, search from the back;
+
+- `elem:last-child`: the last child element
+
+- `elem:only-child`: If elem is the only child element under the parent element, select it;
+
+- `elem:nth-of-type(n)`: select the nth `elem` type element under the parent element;
+
+- `elem:empty`: Select `elem` type elements that do not contain child elements and content;
+
+- `:not(elem)`: select each element that is `not` an `elem` element;
+
+- `:enabled`: the form component in the `enabled` state
+
+
+[38] . Create a triangle with pure `CSS`
+
+[code](src/html/38.html)
+
+
+[39] . The coverage rule between `min-width/max-width` and `min-height/max-height` attributes?
+
+
+`max-width` will override `width`, even if width is `inline` style or `!important` is set. 
+`min-width` will override `max-width`, this rule occurs when `min-width` and `max-width` conflict
+
+
+[40] . Simply talk about the types of memory leaks in js
+
+Unexpected `global` variables; 
+`closures`; 
+timers that have not been `emptied`;
+event `listeners` that have not been destroyed; 
+`DOM` references;
+
+[41] . Simulate the implementation of new
+
+[code](src/js/41.ts)
+
+[42] .  try to handwrite render function in vue.
+
+
+[VNodeData](src/js/42.ts)
+[simpleCode](src/js/simpleCode.ts)
